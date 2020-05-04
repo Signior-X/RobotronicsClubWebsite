@@ -254,4 +254,84 @@ router.post('/projects/:id/update', function (req, res, next) {
   });
 });
 
+/* -------- REST APIs -------- */
+// Status is Ok for both errors and successful, check at the client side for this
+// -------- Important ---------
+// Response: { status : 1 or 0 ) 1 implies success 
+
+/**
+ * Rest Api to view the items present in inventory
+ */
+router.get('/api/inventory', function (req, res, next) {
+  Inventory.find({}).select('-_id').exec(function (err, result) {
+    console.log(result);
+    res.json(result);
+  });
+});
+
+/**
+ * API to Add an item in inventory
+ * 
+ * Example to be sent request body in json
+ * {
+ *    "name" : "nodemcu",
+ *    "total" : "9",
+ *    "available" : "6",
+ *    "price" : "290"
+ * }
+ * 
+ */
+router.post('/api/inventory/create', function (req, res, next) {
+  var component = new Inventory(
+    {
+      name: req.body.name,
+      total: req.body.total,
+      available: req.body.available,
+      price: req.body.price
+    }
+  );
+  component.save(function (err) {
+    if (err) { 
+      // Only passing the error message in the response
+      res.json({ status : 0, msg : err.message});
+     }
+    res.json({ status : 1, msg : "successfully added!"});
+  });
+});
+
+/**
+ * Rest Api to delete an inventory value using the id
+ * send the id in the body in the form of json
+ */
+router.post('/api/inventory/delete', function (req, res, next) {
+  // getting the Id
+  Inventory.findByIdAndRemove(req.body.id, function deleteComponent(err) {
+    if (err) { res.json({ status : 0, msg : err.message}); }
+    // Success - go to author list
+    res.json({ status : 1, msg : "successfully deleted!"});
+  });
+})
+
+/**
+ * Rest Api to update an inventory
+ * Send the id, name, total, available, price in json form (Five things)
+ */
+router.post('/api/inventory/update', function (req, res, next) {
+  var component = new Inventory(
+    {
+      name: req.body.name,
+      total: req.body.total,
+      available: req.body.available,
+      price: req.body.price,
+      _id: req.params.id
+    }
+  );
+  Inventory.findByIdAndUpdate(req.body.id, component, {}, function (err, thecomponent) {
+    if (err) { res.json({ status : 0, msg : err.message}); }
+    res.json({ status : 1, msg : "successfully updated!"});
+  });
+});
+
+
+
 module.exports = router;
