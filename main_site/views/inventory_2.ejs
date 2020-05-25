@@ -387,10 +387,17 @@
                  + '</table><hr>';
                 //console.log(componentsTableString);
 
-                var toShowCancelButton = "none";
+                var toShowIsAccepted = "block";
+                var buttonCancel = '';
                 if(issuesData[i].status === "Requested"){
                   //console.log("Yes show cancel button");
-                  toShowCancelButton = "block";
+
+                  toShowIsAccepted = "none";
+                  buttonCancel = '<Button class="btn btn-danger"'
+                    + ' style="display: block;" '
+                    + ' onclick=removeIssue("' + issuesData[i]._id + '") >'
+                      + 'Cancel Request'
+                    + '</button>'
                 }
 
                 // Now update the UI
@@ -399,10 +406,10 @@
                   + '<h3 class="inline-items" style="text-align: right; float: right">' + issuesData[i].status + '</h3>'
                   + '<br><br>'
                   + componentsTableString
-                  + '<Button class="btn btn-danger"'
-                    + ' style="display: ' + toShowCancelButton + ';"'
-                    + ' onclick=removeIssue("' + issuesData[i]._id + '")> Cancel'
-                    + '</button>'
+                    + buttonCancel
+                    + '<h2 style="color: green; display: ' + toShowIsAccepted + ';" >'
+                      + 'Request Accepted and Components Issued'
+                    + '</h2>'
                   + '</div>'; 
 
               }

@@ -319,7 +319,7 @@ router.post('/projects/:id/update', function (req, res, next) {
 });
 
 /* REST APIs to handle Issues */
-// status: "Requested" - create ,"Return-Pending" - accept, "Returned" - clear
+// status: "Requested" - create ,"Return-Pending" - accept, "Returned" - clear //Return not used (instead it is removed)
 /* Example
   {
     "items": { "motors": "2", "ir sensor": "3" },
@@ -335,11 +335,11 @@ router.post('/projects/:id/update', function (req, res, next) {
 For a normal user:
 /issues/create
 /issues/myissues
+/issues/:id/delete // To remove from the database
 
 For only admins
 /issues/all // Get the list of all the issues
 /issues/:id/accept // Accepting the issue - sets the status to "Return-Pending"
-/issues/:id/delete // To remove from the database
 /issues/:id/reject // Not deleting just setting the status to rejected  // Not implemented
 */
 
@@ -408,7 +408,7 @@ router.post('/issues/all', isLoggedIn, function(req, res, next) {
 });
 
 // API to accept the return request
-router.post('/issues/:id/accept', function (req, res, next) {
+router.post('/issues/:id/accept', isLoggedIn, function (req, res, next) {
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
